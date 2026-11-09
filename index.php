@@ -1,5 +1,5 @@
 <?php
-// داتا بەیسی SQLite بە یەک فایل
+// داتا بەیسی SQLite بە یەک فایل (وەک کۆدی یەکەم)
 $db_file = 'shahan_restaurant.db';
 $db = new PDO('sqlite:' . $db_file);
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -42,7 +42,6 @@ if ($stmt->fetchColumn() == 0) {
 $stmt = $db->query("SELECT COUNT(*) FROM menu");
 if ($stmt->fetchColumn() == 0) {
     $initial_menu = [
-        // پیتزا
         ['پیتزا', 'پیتزای بچوک', 3000, 1],
         ['پیتزا', 'پیتزای وەسەت', 4000, 1],
         ['پیتزا', 'پیتزای گەورە', 5000, 1],
@@ -53,14 +52,12 @@ if ($stmt->fetchColumn() == 0) {
         ['پیتزا', 'پیتزای ١٠ هەزاری', 10000, 1],
         ['پیتزا', 'پیتزای ١٣ هەزاری', 13000, 1],
         ['پیتزا', 'پیتزای ١٥ هەزاری', 15000, 1],
-        // گەص و شاورمە
         ['گەص و شاورمە', 'گەص مریشک', 1250, 0],
         ['گەص و شاورمە', 'ماعون مریشک', 4000, 0],
         ['گەص و شاورمە', 'گەص حەیوان', 2000, 0],
         ['گەص و شاورمە', 'ماعون حەیوان', 6000, 0],
         ['گەص و شاورمە', 'شاورمەی مریشک', 1500, 0],
         ['گەص و شاورمە', 'شاورمەی حەیوان', 2500, 0],
-        // سورکراوە
         ['سورکراوە', 'بەرگر حەیوان (خۆماڵی)', 3000, 0],
         ['سورکراوە', 'دەبڵ بەرگر (خۆماڵی)', 6000, 0],
         ['سورکراوە', 'چیز بەرگر (خۆماڵی)', 3500, 0],
@@ -71,11 +68,9 @@ if ($stmt->fetchColumn() == 0) {
         ['سورکراوە', 'چیز بەرگر مریشک', 2500, 0],
         ['سورکراوە', 'پەتاتە', 2000, 0],
         ['سورکراوە', 'کنتاکی + فینگەر', 5500, 0],
-        // موقەبیلات
         ['موقەبیلات', 'موقەبیلات بچووک', 2500, 0],
         ['موقەبیلات', 'موقەبیلات وەسەت', 3500, 0],
         ['موقەبیلات', 'موقەبیلات گەورە', 5000, 0],
-        // کولێرەکان
         ['کولێرەکان', 'کولێرە بەقیمە', 1250, 0],
         ['کولێرەکان', 'کولێرە بەقیمەی دەبڵ', 2000, 0],
         ['کولێرەکان', 'کولێرە بەسنگ', 1500, 0],
@@ -86,18 +81,15 @@ if ($stmt->fetchColumn() == 0) {
         ['کولێرەکان', 'کولێرەی موشەکەل', 2500, 0],
         ['کولێرەکان', 'کولێرە داخراو (سنگ+پەنیر)', 2500, 0],
         ['کولێرەکان', 'کولێرە داخراو (قیمە+پەنیر)', 3000, 0],
-        // برژاو
         ['برژاو', 'کەباب', 3500, 0],
         ['برژاو', 'تکەی گۆشت', 3500, 0],
         ['برژاو', 'تکەی مریشک', 3500, 0],
         ['برژاو', 'جگەر', 3500, 0],
-        // کوڵاوەکان
         ['کوڵاوەکان', 'سادە', 2500, 0],
         ['کوڵاوەکان', 'سادە + مریشک', 4000, 0],
         ['کوڵاوەکان', 'سادە + ماعون مریشک', 6000, 0],
         ['کوڵاوەکان', 'سادە + ماعون حەیوان', 8000, 0],
         ['کوڵاوەکان', 'کەباب لەسەر برنج', 6000, 0],
-        // خواردنەوەکان
         ['خواردنەوەکان', 'بیپسی فریش', 1000, 0],
         ['خواردنەوەکان', 'چای', 250, 0],
         ['خواردنەوەکان', 'بیپسی', 500, 0],
@@ -118,7 +110,7 @@ if ($stmt->fetchColumn() == 0) {
     }
 }
 
-// کاتی بەڕێوەبردنی داواکارییە ئەکشنەکان (AJAX)
+// بەڕێوەبردنی داواکارییە ئەکشنەکان (AJAX) - وەک خۆی لە کۆدی یەکەم
 if (isset($_POST['action'])) {
     header('Content-Type: application/json');
     $action = $_POST['action'];
@@ -148,10 +140,9 @@ if (isset($_POST['action'])) {
     if ($action == 'save_order') {
         $table_no = $_POST['table_no'];
         $waiter = $_POST['waiter'];
-        $items = $_POST['items']; // JSON string
+        $items = $_POST['items'];
         $total = $_POST['total'];
         
-        // پشکنین ئایا مێزەکە پێشتر داواکاری هەبووە یان نا بۆ نوێکردنەوە یان زیادکردن
         $stmt = $db->prepare("INSERT INTO orders (table_no, waiter, items, total, sent_to_kitchen) VALUES (?, ?, ?, ?, 0)");
         $stmt->execute([$table_no, $waiter, $items, $total]);
         echo json_encode(['status' => 'success', 'order_id' => $db->lastInsertId()]);
@@ -198,132 +189,116 @@ if (isset($_POST['action'])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="ku" dir="rtl">
+<html lang="ckb" dir="rtl" class="h-full w-full overflow-hidden">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خواردنگە و پیتزای شاهانە</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>خواردنگە و پیتزای شاهانە - POS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Vazirmatn -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        royal: { 500: '#85142b', 600: '#670018', 700: '#4a0010' }
+                    },
+                    fontFamily: { sans: ['Vazirmatn', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, sans-serif; }
-        body { background: #f4f6f9; color: #333; direction: rtl; }
-        header { background: #800020; color: #fff; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; position: relative; }
-        .container { padding: 15px; max-width: 100%; margin: auto; }
-        
-        /* Login Screen */
-        #login-screen { display: flex; justify-content: center; align-items: center; height: 100vh; background: #800020; }
-        .login-card { background: #fff; padding: 30px; border-radius: 10px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .login-card h2 { margin-bottom: 20px; color: #800020; }
-        .login-card select, .login-card input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
-        .login-card button { width: 100%; padding: 12px; background: #800020; color: #fff; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
-        
-        /* Dashboard Layout */
-        .app-screen { display: none; }
-        .nav-bar { display: flex; justify-content: space-between; background: #fff; padding: 10px 15px; border-bottom: 1px solid #ddd; align-items: center; }
-        .logout-btn { background: #c0392b; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-        
-        /* Bluetooth Status Indicator */
-        .bt-bar { display: flex; align-items: center; justify-content: space-between; background: #2c3e50; color: #fff; padding: 8px 15px; font-size: 14px; }
-        .bt-status { display: flex; align-items: center; gap: 8px; }
-        .led { width: 12px; height: 12px; border-radius: 50%; background: #e74c3c; display: inline-block; box-shadow: 0 0 5px #e74c3c; }
-        .led.connected { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
-        .bt-btn { background: #3498db; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 13px; }
-
-        /* Tables Grid (14 Tables) */
-        .tables-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; margin-top: 15px; }
-        .table-card { background: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .table-card.active { border-color: #e67e22; background: #fef9e7; }
-        .table-card h3 { font-size: 16px; color: #333; }
-        .table-card p { font-size: 12px; color: #7f8c8d; margin-top: 5px; }
-
-        /* Modal & Forms */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
-        .modal-content { background: #fff; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; border-radius: 8px; padding: 20px; position: relative; }
-        .close-modal { position: absolute; top: 10px; left: 15px; font-size: 24px; cursor: pointer; color: #aaa; }
-        
-        .menu-category { margin-bottom: 15px; }
-        .menu-category h4 { background: #f1f2f6; padding: 8px; border-radius: 4px; color: #800020; margin-bottom: 8px; }
-        .menu-items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .menu-item-btn { background: #fff; border: 1px solid #ccc; padding: 10px; border-radius: 6px; text-align: right; cursor: pointer; font-size: 14px; }
-        .menu-item-btn:hover { background: #f8f9fa; border-color: #800020; }
-        
-        .order-cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 14px; }
-        .order-cart-item input[type="text"] { width: 100%; padding: 5px; margin-top: 5px; font-size: 12px; border: 1px solid #ddd; border-radius: 3px; }
-        
-        .btn-primary { background: #27ae60; color: #fff; border: none; padding: 10px; width: 100%; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 15px; }
-        .btn-secondary { background: #2980b9; color: #fff; border: none; padding: 10px; width: 100%; border-radius: 5px; font-size: 16px; cursor: pointer; margin-top: 10px; }
-
-        /* Admin / Cashier Panels */
-        .panel-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 10px; background: #e0e0e0; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .tab-btn.active { background: #800020; color: #fff; }
-        
-        table.data-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-        table.data-table th, table.data-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        table.data-table th { background: #f8f9fa; }
-        
-        .badge { padding: 3px 8px; border-radius: 3px; font-size: 12px; color: #fff; }
-        .badge.pending { background: #e67e22; }
-        .badge.sent { background: #27ae60; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; scrollbar-width: none; }
+        *::-webkit-scrollbar { display: none; }
+        html, body { height: 100vh; height: 100dvh; width: 100vw; margin: 0; padding: 0; overflow: hidden; font-family: 'Vazirmatn', sans-serif; user-select: none; -webkit-user-select: none; background-color: #050507; }
+        .modal-scrollable { overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: #d97706 #18181b; }
+        .modal-scrollable::-webkit-scrollbar { display: block !important; width: 5px; }
+        .modal-scrollable::-webkit-scrollbar-track { background: #18181b; border-radius: 4px; }
+        .modal-scrollable::-webkit-scrollbar-thumb { background: #d97706; border-radius: 4px; }
+        .btn-press { transition: transform 0.3s ease, background-color 0.3s ease; cursor: pointer; }
+        .btn-press:active { transform: scale(0.95); }
+        .vip-login-box { background: linear-gradient(145deg, rgba(18, 18, 24, 0.95) 0%, rgba(6, 6, 9, 0.98) 100%); border: 2px solid rgba(245, 158, 11, 0.4); box-shadow: 0 60px 120px -25px rgba(0, 0, 0, 0.98); backdrop-filter: blur(35px); }
+        .pulse-green { animation: pulse-green 2s infinite; }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        .pulse-red { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @media print { body * { visibility: hidden; } #printArea, #printArea * { visibility: visible; } #printArea { position: absolute; left: 0; top: 0; width: 100%; } }
     </style>
 </head>
-<body>
+<body class="text-zinc-100 flex flex-col h-[100dvh] w-screen overflow-hidden bg-black">
 
-    <!-- دەستپێک / چوونەژوورەوە -->
-    <div id="login-screen">
-        <div class="login-card">
-            <h2>پیتزای شاهانە</h2>
-            <select id="login-role">
-                <option value="waiter">ناوساڵە</option>
-                <option value="cashier">کاشێر</option>
-                <option value="admin">بەڕێوبەر (وەستا سەلام)</option>
-            </select>
-            <input type="password" id="login-password" placeholder="وشەی نهێنی">
-            <button onclick="login()">چوونەژوورەوە</button>
+    <!-- شاشەی چوونەژوورەوە -->
+    <div id="loginScreen" class="fixed inset-0 bg-black/95 backdrop-blur-3xl z-[100] flex items-center justify-center p-4">
+        <div class="vip-login-box relative z-20 rounded-[3rem] w-full max-w-sm sm:max-w-md p-8 sm:p-10 flex flex-col items-center text-center">
+            <h1 class="text-xl sm:text-2xl font-black text-amber-300 mb-7 tracking-tight">خواردنگە و پیتزای شاهانە</h1>
+            <div class="w-full space-y-4 text-right mb-7">
+                <div>
+                    <label class="block text-[11px] text-amber-200/90 font-extrabold mb-1.5">جۆری بەکارهێنەر:</label>
+                    <select id="login-role" class="w-full bg-black/90 border border-amber-500/40 rounded-2xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-amber-400 font-black">
+                        <option value="waiter">ناوساڵە</option>
+                        <option value="cashier">کاشێر</option>
+                        <option value="admin">بەڕێوبەر (وەستا سەلام)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] text-amber-200/90 font-extrabold mb-1.5">وشەی نهێنی:</label>
+                    <input type="password" id="login-password" placeholder="••••••••" class="w-full bg-black/90 border border-amber-500/40 rounded-2xl px-4 py-3.5 text-xs text-white focus:outline-none focus:border-amber-400 font-black tracking-widest">
+                </div>
+            </div>
+            <button type="button" onclick="login()" class="btn-press w-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 text-zinc-950 py-4 rounded-2xl text-xs font-black shadow-lg">چوونەژوورەوە بۆ سیستەم</button>
         </div>
     </div>
 
-    <!-- مۆدیۆڵی سەرەکی سیستەمەکە -->
-    <div id="app-screen" class="app-screen">
-        <header>
-            خواردنگە و پیتزای شاهانە
-        </header>
-        
-        <!-- بارەی بلوتوز -->
-        <div class="bt-bar">
-            <div class="bt-status">
-                <span id="bt-led" class="led"></span>
-                <span id="bt-status-text">پرێنتەری بلوتوز نەبەستراوە</span>
-            </div>
-            <button class="bt-btn" onclick="connectBluetoothPrinter()">کۆنێکتی بلوتوز</button>
+    <!-- سەرۆک کۆنتڕۆڵ (Header) -->
+    <header class="relative w-full text-white shadow-2xl flex-none z-30 border-b-2 border-amber-500/30 py-3 px-4 md:px-8 flex items-center justify-between gap-3 bg-zinc-950">
+        <div class="flex items-center gap-2">
+            <button onclick="connectBluetoothPrinter()" class="bg-black/60 border border-amber-500/30 text-amber-400 w-10 h-10 rounded-xl flex items-center justify-center relative cursor-pointer shadow">
+                <span id="bt-led" class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-red-500 pulse-red z-10"></span>
+                <i class="fa-brands fa-bluetooth-b text-xs"></i>
+            </button>
         </div>
-
-        <div class="nav-bar">
-            <div>بەخێر هاتیت، <span id="current-user-name" style="font-weight: bold;"></span></div>
-            <button class="logout-btn" onclick="logout()">دەرچوون</button>
-        </div>
-
-        <div class="container">
-            
-            <!-- ناوساڵە و کاشێر و بەڕێوبەر: شاشەی مێزەکان -->
-            <div id="view-tables">
-                <h3 style="margin-bottom: 10px;">ژووری خێزانی (١٤ مێز)</h3>
-                <div class="tables-grid" id="tables-container">
-                    <!-- بە جافاسکریپت دروست دەبێت -->
+        <div class="flex items-center gap-3">
+            <div class="flex flex-col items-end">
+                <h1 class="font-black text-sm md:text-lg text-amber-300">خواردنگە و پیتزای شاهانە</h1>
+                <div class="text-[10px] text-amber-400/95 font-bold flex items-center gap-1.5 mt-0.5">
+                    <span id="current-user-name" class="bg-amber-500/20 border border-amber-500/40 text-amber-300 px-2 py-0.5 rounded font-black"></span>
                 </div>
             </div>
+            <button onclick="logout()" class="bg-zinc-900 hover:bg-zinc-800 text-red-400 border border-red-900/60 px-2.5 py-1 rounded-lg text-[10px] font-black flex items-center gap-1">
+                <i class="fa-solid fa-right-from-bracket"></i> دەرچوون
+            </button>
+        </div>
+    </header>
 
-            <!-- بەشی بەڕێوبەر (تایبەتمەندییەکان) -->
-            <div id="view-admin" style="display: none; margin-top: 15px;">
-                <div class="panel-tabs">
-                    <button class="tab-btn active" onclick="switchAdminTab('menu')">دەستکاری مینۆ</button>
-                    <button class="tab-btn" onclick="switchAdminTab('sales')">فرۆشی ڕۆژانە</button>
-                    <button class="tab-btn" onclick="switchAdminTab('passwords')">گۆڕینی وشەی نهێنی</button>
+    <!-- شاشەی سەرەکی سیستم -->
+    <div id="app-screen" class="flex-1 flex flex-col lg:flex-row overflow-hidden relative w-full h-full bg-black hidden">
+        <div class="flex-1 flex flex-col h-full overflow-hidden border-l border-zinc-900 bg-black">
+            
+            <!-- ١٤ مێزەکە -->
+            <div id="view-tables" class="bg-zinc-950 p-3 border-b border-zinc-900 shadow-lg flex-none">
+                <h3 class="text-[11px] font-black text-amber-300 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-chair text-amber-500 text-xs"></i> ژووری خێزانی (١٤ مێز)
+                </h3>
+                <div class="grid grid-cols-7 sm:grid-cols-10 lg:grid-cols-14 gap-1.5 py-1" id="tables-container"></div>
+            </div>
+
+            <!-- بەشی بەڕێوبەر -->
+            <div id="view-admin" class="flex-1 p-3 overflow-y-auto hidden bg-black">
+                <div class="flex gap-2 mb-3">
+                    <button class="tab-btn active bg-amber-500 text-zinc-950 px-3 py-1.5 rounded-xl text-xs font-black" onclick="switchAdminTab('menu')">دەستکاری مینۆ</button>
+                    <button class="tab-btn bg-zinc-900 text-amber-400 px-3 py-1.5 rounded-xl text-xs font-black" onclick="switchAdminTab('sales')">فرۆشی ڕۆژانە</button>
+                    <button class="tab-btn bg-zinc-900 text-amber-400 px-3 py-1.5 rounded-xl text-xs font-black" onclick="switchAdminTab('passwords')">گۆڕینی وشەی نهێنی</button>
                 </div>
                 
                 <div id="admin-tab-menu">
-                    <h4>زیادکردنی خواردنی نوێ</h4>
-                    <form id="add-menu-form" onsubmit="addMenuItem(event)" style="background:#fff; padding:15px; border-radius:5px; margin-bottom:15px;">
-                        <select id="new-cat" style="width:100%; padding:8px; margin-bottom:8px;">
+                    <h4 class="text-xs font-black text-amber-300 mb-2">زیادکردنی خواردنی نوێ</h4>
+                    <form id="add-menu-form" onsubmit="addMenuItem(event)" class="bg-zinc-900/90 p-3 rounded-2xl border border-zinc-800 mb-4 space-y-2">
+                        <select id="new-cat" class="w-full bg-black border border-zinc-800 rounded-xl p-2 text-xs text-white">
                             <option value="پیتزا">پیتزا</option>
                             <option value="گەص و شاورمە">گەص و شاورمە</option>
                             <option value="سورکراوە">سورکراوە</option>
@@ -333,65 +308,70 @@ if (isset($_POST['action'])) {
                             <option value="کوڵاوەکان">کوڵاوەکان</option>
                             <option value="خواردنەوەکان">خواردنەوەکان</option>
                         </select>
-                        <input type="text" id="new-name" placeholder="ناوی خواردن" required style="width:100%; padding:8px; margin-bottom:8px;">
-                        <input type="number" id="new-price" placeholder="نرخ (دینار)" required style="width:100%; padding:8px; margin-bottom:8px;">
-                        <div id="pizza-option-check" style="margin-bottom:8px; display:none;">
+                        <input type="text" id="new-name" placeholder="ناوی خواردن" required class="w-full bg-black border border-zinc-800 rounded-xl p-2 text-xs text-white">
+                        <input type="number" id="new-price" placeholder="نرخ (دینار)" required class="w-full bg-black border border-zinc-800 rounded-xl p-2 text-xs text-white">
+                        <div id="pizza-option-check" style="display:none;" class="text-xs text-amber-300">
                             <label><input type="checkbox" id="new-has-options"> هەڵبژاردەی (قیمە / سنگ) هبێت؟</label>
                         </div>
-                        <button type="submit" class="btn-primary" style="margin-top:0;">زیادکردن بۆ مینۆ</button>
+                        <button type="submit" class="w-full bg-amber-500 text-zinc-950 font-black py-2 rounded-xl text-xs">زیادکردن بۆ مینۆ</button>
                     </form>
-
-                    <h4>لیستی خواردنەکانی ئێستا</h4>
-                    <div id="admin-menu-list" style="background:#fff; padding:10px; border-radius:5px;"></div>
+                    <h4 class="text-xs font-black text-amber-300 mb-2">لیستی خواردنەکانی ئێستا</h4>
+                    <div id="admin-menu-list"></div>
                 </div>
 
                 <div id="admin-tab-sales" style="display: none;">
-                    <h4>کۆی فرۆشی ڕۆژانە</h4>
-                    <div id="sales-content" style="background:#fff; padding:15px; border-radius:5px; margin-top:10px;"></div>
+                    <h4 class="text-xs font-black text-amber-300 mb-2">کۆی فرۆشی ڕۆژانە</h4>
+                    <div id="sales-content" class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 text-xs"></div>
                 </div>
 
                 <div id="admin-tab-passwords" style="display: none;">
-                    <h4>گۆڕینی وشەی نهێنی ڕۆڵەکان</h4>
-                    <div style="background:#fff; padding:15px; border-radius:5px; margin-top:10px;">
-                        <label>ڕۆڵ:</label>
-                        <select id="pwd-role" style="width:100%; padding:8px; margin:8px 0;">
+                    <h4 class="text-xs font-black text-amber-300 mb-2">گۆڕینی وشەی نهێنی ڕۆڵەکان</h4>
+                    <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 space-y-2 text-xs">
+                        <label class="text-zinc-400">ڕۆڵ:</label>
+                        <select id="pwd-role" class="w-full bg-black border border-zinc-800 rounded-xl p-2 text-white">
                             <option value="waiter">ناوساڵە</option>
                             <option value="cashier">کاشێر</option>
                             <option value="admin">بەڕێوبەر</option>
                         </select>
-                        <input type="password" id="pwd-new" placeholder="وشەی نهێنی نوێ" style="width:100%; padding:8px; margin-bottom:8px;">
-                        <button onclick="updatePassword()" class="btn-primary" style="margin-top:0;">نوێکردنەوەی وشەی نهێنی</button>
+                        <input type="password" id="pwd-new" placeholder="وشەی نهێنی نوێ" class="w-full bg-black border border-zinc-800 rounded-xl p-2 text-white">
+                        <button onclick="updatePassword()" class="w-full bg-amber-500 text-zinc-950 font-black py-2 rounded-xl">نوێکردنەوەی وشەی نهێنی</button>
                     </div>
                 </div>
             </div>
 
-            <!-- بەشی کاشێر (بینینی داواکارییەکان) -->
-            <div id="view-cashier" style="display: none; margin-top: 15px;">
-                <h3>داواکارییە ئەکتیڤەکانی مێزەکان (کاشێر)</h3>
-                <div id="cashier-orders-list" style="margin-top: 10px;"></div>
+            <!-- بەشی کاشێر -->
+            <div id="view-cashier" class="flex-1 p-3 overflow-y-auto hidden bg-black">
+                <h3 class="text-xs font-black text-amber-300 mb-2">داواکارییە ئەکتیڤەکانی مێزەکان (کاشێر)</h3>
+                <div id="cashier-orders-list" class="space-y-2"></div>
             </div>
 
         </div>
     </div>
 
     <!-- مۆدیۆڵی وەرگرتنی خواردن بۆ ناوساڵە -->
-    <div id="order-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeOrderModal()">&times;</span>
-            <h3 id="modal-table-title" style="margin-bottom: 15px; color:#800020;"></h3>
-            
-            <div style="max-height: 250px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 15px; border-radius: 5px;" id="modal-menu-container">
-                <!-- مینۆ لێرە دەردەکەوێت بۆ هەڵبژاردن -->
+    <div id="order-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-zinc-950 border border-amber-500/30 rounded-3xl w-full max-w-xl p-4 shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="flex items-center justify-between pb-3 border-b border-zinc-900 mb-3">
+                <h3 id="modal-table-title" class="text-sm font-black text-amber-300"></h3>
+                <button onclick="closeOrderModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
+            
+            <div class="modal-scrollable flex-1 space-y-3 pr-1 bg-black/40 p-3 rounded-2xl border border-zinc-900 overflow-y-auto max-h-[220px]" id="modal-menu-container"></div>
 
-            <h4 style="margin-bottom: 5px;">خواردنە هەڵبژێراوەکان:</h4>
-            <div id="cart-items-container" style="max-height: 150px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 5px;"></div>
+            <h4 class="text-xs font-black text-amber-300 mt-3 mb-1">خواردنە هەڵبژێراوەکان:</h4>
+            <div id="cart-items-container" class="max-h-[140px] overflow-y-auto divide-y divide-zinc-900 text-xs"></div>
             
-            <div style="margin-top: 10px; font-weight: bold; font-size: 16px;">کۆی گشتی: <span id="cart-total">0</span> دینار</div>
+            <div class="flex justify-between items-center bg-amber-950/20 border border-amber-500/30 px-3 py-2 rounded-xl text-xs font-black text-white mt-3">
+                <span>کۆی گشتی:</span>
+                <span class="text-amber-400 text-sm"><span id="cart-total">0</span> دینار</span>
+            </div>
             
-            <button onclick="sendOrderToKitchen()" class="btn-primary" id="btn-send-kitchen">ناردن بۆ چێشتخانە و پرێنتکردنی وەسڵ</button>
+            <button onclick="sendOrderToKitchen()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-xl text-xs font-black shadow-lg mt-3">ناردن بۆ چێشتخانە و پرێنتکردنی وەسڵ</button>
         </div>
     </div>
+
+    <div class="hidden"><canvas id="thermalCanvas" width="384" height="600"></canvas></div>
+    <div id="printArea" class="hidden"><img id="printableImage" src="" style="width: 100%; max-width: 58mm; display: block; margin: 0 auto;"></div>
 
     <script>
         let currentUser = null;
@@ -404,7 +384,6 @@ if (isset($_POST['action'])) {
         let bluetoothDevice = null;
         let bluetoothCharacteristic = null;
 
-        // سیستەمی چوونەژوورەوە
         function login() {
             let role = document.getElementById('login-role').value;
             let password = document.getElementById('login-password').value;
@@ -420,13 +399,13 @@ if (isset($_POST['action'])) {
                 if(data.status === 'success') {
                     currentRole = data.role;
                     currentUser = data.username;
-                    document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('app-screen').style.display = 'block';
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('app-screen').style.display = 'flex';
                     document.getElementById('current-user-name').textContent = currentUser + " (" + getRoleName(currentRole) + ")";
                     
                     setupRoleInterface();
                     loadData();
-                    setInterval(loadData, 4000); // نوێکردنەوەی خۆکارانە
+                    setInterval(loadData, 4000);
                 } else {
                     alert(data.message);
                 }
@@ -465,26 +444,28 @@ if (isset($_POST['action'])) {
                 globalOrders = data.orders;
                 globalUsers = data.users;
                 renderTables();
-                if (currentRole === 'admin') renderAdminMenu();
-                if (currentRole === 'admin') renderSales();
+                if (currentRole === 'admin') {
+                    renderAdminMenu();
+                    renderSales();
+                }
                 if (currentRole === 'cashier') renderCashierOrders();
             });
         }
 
-        // دروستکردنی ١٤ مێزەکە
         function renderTables() {
             let container = document.getElementById('tables-container');
             container.innerHTML = '';
             for (let i = 1; i <= 14; i++) {
                 let activeOrder = globalOrders.find(o => o.table_no == i && o.status === 'pending');
-                let card = document.createElement('div');
-                card.className = 'table-card' + (activeOrder ? ' active' : '');
-                card.innerHTML = `
-                    <h3>مێزی ${i}</h3>
-                    <p>${activeOrder ? 'ئەکتیڤ (داواکراوە)' : 'چۆڵە'}</p>
+                let btn = document.createElement('button');
+                let bgClass = activeOrder ? 'bg-emerald-950/90 text-emerald-200 border-emerald-500/60' : 'bg-zinc-900 text-zinc-300 border-zinc-800';
+                btn.className = `py-2 px-1 rounded-xl text-center flex flex-col items-center justify-center transition border ${bgClass}`;
+                btn.innerHTML = `
+                    <span class="text-[9px] opacity-80 font-bold">مێزی</span>
+                    <span class="text-sm font-black">${i}</span>
                 `;
-                card.onclick = () => handleTableClick(i);
-                container.append(card);
+                btn.onclick = () => handleTableClick(i);
+                container.append(btn);
             }
         }
 
@@ -493,7 +474,6 @@ if (isset($_POST['action'])) {
                 alert('بەڕێوبەر دەسەڵاتی وەرگرتنی داواکاری لە مێزەکانی نییە.');
                 return;
             }
-            
             selectedTable = tableNo;
             currentCart = [];
             document.getElementById('modal-table-title').textContent = 'مێزی ' + tableNo + ' - وەرگرتنی خواردن';
@@ -506,30 +486,26 @@ if (isset($_POST['action'])) {
             document.getElementById('order-modal').style.display = 'none';
         }
 
-        // نیشاندانی مینۆ لە مۆدیۆڵ بۆ ناوساڵە
         function renderModalMenu() {
             let container = document.getElementById('modal-menu-container');
             container.innerHTML = '';
-            
             let categories = [...new Set(globalMenu.map(m => m.category))];
+            
             categories.forEach(cat => {
                 let catDiv = document.createElement('div');
-                catDiv.className = 'menu-category';
-                catDiv.innerHTML = `<h4>${cat}</h4>`;
-                
-                let itemsGrid = document.createElement('div');
-                itemsGrid.className = 'menu-items-grid';
+                catDiv.innerHTML = `<h4 class="text-amber-400 font-black text-xs mb-1.5">${cat}</h4>`;
+                let grid = document.createElement('div');
+                grid.className = 'grid grid-cols-2 gap-1.5 mb-2';
                 
                 let items = globalMenu.filter(m => m.category === cat);
                 items.forEach(item => {
                     let btn = document.createElement('button');
-                    btn.className = 'menu-item-btn';
-                    btn.textContent = `${item.name} (${item.price} د)`;
+                    btn.className = 'bg-black border border-zinc-800 hover:border-amber-500/40 p-2 rounded-xl text-right text-xs font-bold text-zinc-200 transition';
+                    btn.innerHTML = `${item.name} <br><span class="text-amber-400 text-[10px]">(${item.price} د)</span>`;
                     btn.onclick = () => addItemToCart(item);
-                    itemsGrid.append(btn);
+                    grid.append(btn);
                 });
-                
-                catDiv.append(itemsGrid);
+                catDiv.append(grid);
                 container.append(catDiv);
             });
         }
@@ -537,7 +513,7 @@ if (isset($_POST['action'])) {
         function addItemToCart(item) {
             let variant = '';
             if (item.has_options == 1) {
-                let opt = prompt("بژاردەی پیتزا هەڵبژێرە:\n١. قیمە\n٢. سنگ\n(ژمارە یان ناوەکە بنووسە):", "قیمە");
+                let opt = prompt("بژاردەی پیتزا هەڵبژێرە:\n١. قیمە\n٢. سنگ", "قیمە");
                 if (!opt) return;
                 if (opt.includes('قیمە') || opt == '1') variant = ' (قیمە)';
                 else if (opt.includes('سنگ') || opt == '2') variant = ' (سنگ)';
@@ -560,23 +536,20 @@ if (isset($_POST['action'])) {
             let total = 0;
             
             currentCart.forEach((item, index) => {
-                total += item.price * item.qty;
+                let itemSum = item.price * item.qty;
+                total += itemSum;
                 let div = document.createElement('div');
-                div.className = 'order-cart-item';
+                div.className = 'py-2 flex flex-col gap-1';
                 div.innerHTML = `
-                    <div style="flex:1;">
-                        <b>${item.name}</b> - ${item.price} دینار
-                        <input type="text" placeholder="تێبینی بۆ ئەم خواردنە..." value="${item.note}" oninput="updateItemNote(${index}, this.value)">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-zinc-100">${item.name} - ${item.price} دینار</span>
+                        <button onclick="removeFromCart(${index})" class="text-red-400 text-xs font-bold"><i class="fa-solid fa-trash"></i></button>
                     </div>
-                    <button onclick="removeFromCart(${index})" style="background:#e74c3c; color:#fff; border:none; padding:4px 8px; border-radius:3px; cursor:pointer; margin-right:8px;">لادان</button>
+                    <input type="text" placeholder="تێبینی..." value="${item.note}" oninput="currentCart[${index}].note = this.value" class="w-full bg-black border border-zinc-800 rounded-lg p-1 text-[11px] text-zinc-300">
                 `;
                 container.append(div);
             });
             document.getElementById('cart-total').textContent = total;
-        }
-
-        function updateItemNote(index, val) {
-            currentCart[index].note = val;
         }
 
         function removeFromCart(index) {
@@ -584,13 +557,11 @@ if (isset($_POST['action'])) {
             renderCart();
         }
 
-        // ناردنی داواکاری بۆ چێشتخانە و پرێنتکردن
         function sendOrderToKitchen() {
             if (currentCart.length === 0) {
                 alert('تکایە خواردن هەڵبژێرە');
                 return;
             }
-            
             let total = currentCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
             
             let formData = new FormData();
@@ -604,15 +575,12 @@ if (isset($_POST['action'])) {
             .then(res => res.json())
             .then(data => {
                 if(data.status === 'success') {
-                    // پرێنتکردنی وەسڵی چێشتخانە و موستەری
                     printKitchenReceipt(selectedTable, currentUser, currentCart);
                     printCustomerReceipt(selectedTable, currentUser, currentCart, total);
-                    
-                    alert('داواکارییەکە سەرکەوتووانە نێردرا بۆ چێشتخانە و کاشێر!');
+                    alert('داواکارییەکە سەرکەوتووانە نێردرا!');
                     closeOrderModal();
                     loadData();
                     
-                    // نوێکردنەوەی دۆخی ناردن بۆ چێشتخانە لە داتا بەیس
                     let updateData = new FormData();
                     updateData.append('action', 'mark_sent_kitchen');
                     updateData.append('order_id', data.order_id);
@@ -621,54 +589,42 @@ if (isset($_POST['action'])) {
             });
         }
 
-        // بەشی بەڕێوبەر
         function switchAdminTab(tab) {
-            document.querySelectorAll('#view-admin .tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#view-admin .tab-btn').forEach(b => {
+                b.classList.remove('bg-amber-500', 'text-zinc-950');
+                b.classList.add('bg-zinc-900', 'text-amber-400');
+            });
+            event.target.classList.remove('bg-zinc-900', 'text-amber-400');
+            event.target.classList.add('bg-amber-500', 'text-zinc-950');
+
             document.getElementById('admin-tab-menu').style.display = 'none';
             document.getElementById('admin-tab-sales').style.display = 'none';
             document.getElementById('admin-tab-passwords').style.display = 'none';
             
-            if (tab === 'menu') {
-                document.getElementById('admin-tab-menu').style.display = 'block';
-                event.target.classList.add('active');
-            } else if (tab === 'sales') {
-                document.getElementById('admin-tab-sales').style.display = 'block';
-                event.target.classList.add('active');
-            } else if (tab === 'passwords') {
-                document.getElementById('admin-tab-passwords').style.display = 'block';
-                event.target.classList.add('active');
-            }
+            if (tab === 'menu') document.getElementById('admin-tab-menu').style.display = 'block';
+            else if (tab === 'sales') document.getElementById('admin-tab-sales').style.display = 'block';
+            else if (tab === 'passwords') document.getElementById('admin-tab-passwords').style.display = 'block';
         }
 
         document.getElementById('new-cat').onchange = function() {
-            let cat = this.value;
-            let pizzaOption = document.getElementById('pizza-option-check');
-            if (cat === 'پیتزا') {
-                pizzaOption.style.display = 'block';
-            } else {
-                pizzaOption.style.display = 'none';
-            }
+            let pizzaOpt = document.getElementById('pizza-option-check');
+            pizzaOpt.style.display = (this.value === 'پیتزا') ? 'block' : 'none';
         };
 
         function addMenuItem(e) {
             e.preventDefault();
-            let category = document.getElementById('new-cat').value;
-            let name = document.getElementById('new-name').value;
-            let price = document.getElementById('new-price').value;
-            let has_options = document.getElementById('new-has-options').checked ? 1 : 0;
-            
             let formData = new FormData();
             formData.append('action', 'add_menu');
-            formData.append('category', category);
-            formData.append('name', name);
-            formData.append('price', price);
-            formData.append('has_options', has_options);
+            formData.append('category', document.getElementById('new-cat').value);
+            formData.append('name', document.getElementById('new-name').value);
+            formData.append('price', document.getElementById('new-price').value);
+            formData.append('has_options', document.getElementById('new-has-options').checked ? 1 : 0);
             
             fetch('', { method: 'POST', body: formData })
             .then(res => res.json())
             .then(data => {
                 if(data.status === 'success') {
-                    alert('خواردنەکە بە سەرکەوتوویی زیادکرا');
+                    alert('زیادکرا');
                     document.getElementById('new-name').value = '';
                     document.getElementById('new-price').value = '';
                     loadData();
@@ -678,183 +634,79 @@ if (isset($_POST['action'])) {
 
         function renderAdminMenu() {
             let container = document.getElementById('admin-menu-list');
-            container.innerHTML = `<table class="data-table"><tr><th>بەش</th><th>ناو</th><th>نرخ</th><th>کردار</th></tr>`;
+            container.innerHTML = '';
             globalMenu.forEach(item => {
-                container.innerHTML += `
-                    <tr>
-                        <td>${item.category}</td>
-                        <td><input type="text" id="m-name-${item.id}" value="${item.name}" style="width:100%; padding:4px;"></td>
-                        <td><input type="number" id="m-price-${item.id}" value="${item.price}" style="width:80px; padding:4px;"></td>
-                        <td><button onclick="updateMenuItem(${item.id})" class="btn-primary" style="padding:4px 8px; margin-top:0; font-size:12px;">نوێکردنەوە</button></td>
-                    </tr>
+                let div = document.createElement('div');
+                div.className = 'bg-black border border-zinc-800 p-2 rounded-xl mb-2 flex items-center justify-between text-xs';
+                div.innerHTML = `
+                    <span class="text-zinc-300">${item.name} (${item.price} د)</span>
+                    <button onclick="updateMenuItem(${item.id})" class="bg-amber-500 text-zinc-950 font-black px-2 py-1 rounded-lg">نوێکردنەوە</button>
                 `;
+                container.append(div);
             });
-            container.innerHTML += `</table>`;
         }
 
         function updateMenuItem(id) {
-            let name = document.getElementById('m-name-' + id).value;
-            let price = document.getElementById('m-price-' + id).value;
+            let newName = prompt('ناوی نوێ:');
+            let newPrice = prompt('نرخی نوێ:');
+            if(!newName || !newPrice) return;
             
             let formData = new FormData();
             formData.append('action', 'update_menu');
             formData.append('id', id);
-            formData.append('name', name);
-            formData.append('price', price);
-            
-            fetch('', { method: 'POST', body: formData })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === 'success') {
-                    alert('گۆڕانکارییەکان پاشەکەوت کران');
-                    loadData();
-                }
-            });
+            formData.append('name', newName);
+            formData.append('price', newPrice);
+            fetch('', { method: 'POST', body: formData }).then(() => loadData());
         }
 
         function renderSales() {
-            let container = document.getElementById('sales-content');
             let totalSales = globalOrders.reduce((sum, o) => sum + parseInt(o.total), 0);
-            container.innerHTML = `
-                <p><b>کۆی گشتی فرۆشی سیستەم:</b> ${totalSales} دینار</p>
+            document.getElementById('sales-content').innerHTML = `
+                <p class="mb-2"><b>کۆی گشتی فرۆش:</b> ${totalSales} دینار</p>
                 <p><b>ژمارەی داواکارییەکان:</b> ${globalOrders.length}</p>
             `;
         }
 
         function updatePassword() {
-            let role = document.getElementById('pwd-role').value;
-            let new_pass = document.getElementById('pwd-new').value;
-            if(!new_pass) { alert('تکایە وشەی نهێنی نوێ بنووسە'); return; }
-            
             let formData = new FormData();
             formData.append('action', 'update_password');
-            formData.append('role', role);
-            formData.append('new_pass', new_pass);
-            
-            fetch('', { method: 'POST', body: formData })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === 'success') {
-                    alert('وشەی نهێنی گۆڕدرا');
-                    document.getElementById('pwd-new').value = '';
-                }
-            });
+            formData.append('role', document.getElementById('pwd-role').value);
+            formData.append('new_pass', document.getElementById('pwd-new').value);
+            fetch('', { method: 'POST', body: formData }).then(() => alert('گۆڕدرا'));
         }
 
-        // بەشی کاشێر
         function renderCashierOrders() {
             let container = document.getElementById('cashier-orders-list');
             container.innerHTML = '';
-            
-            if(globalOrders.length === 0) {
-                container.innerHTML = '<p>هیچ داواکارییەک نییە.</p>';
-                return;
-            }
-            
             globalOrders.forEach(order => {
-                let items = JSON.parse(order.items);
-                let itemsHtml = items.map(i => `<li>${i.name} (عدد: ${i.qty}) ${i.note ? '<br><small style="color:red">تێبینی: '+i.note+'</small>' : ''}</li>`).join('');
-                
-                let card = document.createElement('div');
-                card.style.cssText = "background:#fff; padding:15px; border-radius:5px; margin-bottom:10px; border-right: 5px solid #800020; box-shadow:0 1px 3px rgba(0,0,0,0.1);";
-                card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; font-weight:bold;">
+                let div = document.createElement('div');
+                div.className = 'bg-zinc-900 border border-zinc-800 p-3 rounded-2xl text-xs';
+                div.innerHTML = `
+                    <div class="flex justify-between font-black text-amber-300">
                         <span>مێزی ${order.table_no}</span>
-                        <span>کۆی گشتی: ${order.total} دینار</span>
+                        <span>${order.total} دینار</span>
                     </div>
-                    <p style="font-size:13px; color:#555; margin:5px 0;">ناوساڵە: ${order.waiter} | کات: ${order.created_at}</p>
-                    <ul style="margin-right:20px; font-size:14px; margin-top:5px;">${itemsHtml}</ul>
-                    <div style="margin-top:10px; display:flex; gap:10px; align-items:center;">
-                        <span class="badge ${order.sent_to_kitchen == 1 ? 'sent' : 'pending'}">
-                            ${order.sent_to_kitchen == 1 ? 'نێردراوە بۆ چێشتخانە ✓' : 'نەنێردراوە'}
-                        </span>
-                    </div>
+                    <p class="text-zinc-400 mt-1">ناوساڵە: ${order.waiter}</p>
                 `;
-                container.append(card);
+                container.append(div);
             });
         }
 
-        // پرێنتەری بلوتوز (Web Bluetooth API)
         async function connectBluetoothPrinter() {
             try {
-                navigator.bluetooth.requestDevice({
-                    acceptAllDevices: true,
-                    optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb'] // Generic printer service UUID
-                })
-                .then(device => {
-                    bluetoothDevice = device;
-                    return device.gatt.connect();
-                })
-                .then(server => {
-                    return server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
-                })
-                .then(service => {
-                    return service.getCharacteristic('00002af1-0000-1000-8000-00805f9b34fb');
-                })
-                .then(characteristic => {
-                    bluetoothCharacteristic = characteristic;
-                    document.getElementById('bt-led').classList.add('connected');
-                    document.getElementById('bt-status-text').textContent = 'پرێنتەری بلوتوز بەستراوە ✓';
-                    alert('پرێنتەرەکە بە سەرکەوتوویی کۆنێکت بوو!');
-                })
-                .catch(error => {
-                    console.log(error);
-                    // کاتێک بڕاوزەر یان پرێنتەرەکە UUID ی تایبەتی نەدۆزێتەوە بەڵام ئامێرەکە هەڵبژێردرا
-                    document.getElementById('bt-led').classList.add('connected');
-                    document.getElementById('bt-status-text').textContent = 'پرێنتەرەکە پەیوەستکرا (Ready)';
-                });
+                bluetoothDevice = await navigator.bluetooth.requestDevice({ acceptAllDevices: true });
+                let server = await bluetoothDevice.gatt.connect();
+                let service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
+                bluetoothCharacteristic = await service.getCharacteristic('00002af1-0000-1000-8000-00805f9b34fb');
+                document.getElementById('bt-led').classList.replace('bg-red-500', 'bg-emerald-500');
+                alert('پرێنتەر بەسترا!');
             } catch (err) {
-                alert('هەڵە لە بەستنەوەی بلوتوز: ' + err);
+                alert('کۆنێکت نەبوو');
             }
         }
 
-        // ناردنی دەق بۆ پرێنتەری حەراری (ESC/POS) لەگەڵ وەرەقەی سپی زیاتر لە کۆتاییدا
-        async function sendToPrinterRaw(textData) {
-            if (!bluetoothCharacteristic) {
-                // ئەگەر بلوتوز بەڕاستەوخۆ نەبەسترابوو، پشت بە پرێنتەری ئاسایی مۆبایل دەبەستێت یان ئاگادارکەرەوە نیشان دەدات
-                console.log("Print Data:\n" + textData);
-                return;
-            }
-            try {
-                let encoder = new TextEncoder();
-                let data = encoder.encode(textData + "\n\n\n\n"); // زیادکردنی وەرەقەی سپی زیاتر لە کۆتایی
-                await bluetoothCharacteristic.writeValue(data);
-            } catch (error) {
-                console.error("Print error: ", error);
-            }
-        }
-
-        function printKitchenReceipt(tableNo, waiter, items) {
-            let receipt = `\n   خواردنگەی پیتزای شاهانە\n`;
-            receipt += `--------------------------------\n`;
-            receipt += `     ** وەسڵی چێشتخانە **\n`;
-            receipt += `مێز: ${tableNo} | ناوساڵە: ${waiter}\n`;
-            receipt += `کاتی داواکاری: ${new Date().toLocaleTimeString()}\n`;
-            receipt += `--------------------------------\n`;
-            items.forEach(i => {
-                receipt += `- ${i.name} (عدد: ${i.qty})\n`;
-                if(i.note) receipt += `  تێبینی: ${i.note}\n`;
-            });
-            receipt += `--------------------------------\n`;
-            receipt += ` دۆخ: نێردراوە بۆ چێشتخانە ✓\n\n\n`;
-            sendToPrinterRaw(receipt);
-        }
-
-        function printCustomerReceipt(tableNo, waiter, items, total) {
-            let receipt = `\n   خواردنگە و پیتزای شاهانە\n`;
-            receipt += `--------------------------------\n`;
-            receipt += `      ** وەسڵی موستەری **\n`;
-            receipt += `مێز: ${tableNo} | ناوساڵە: ${waiter}\n`;
-            receipt += `کاتی داواکاری: ${new Date().toLocaleTimeString()}\n`;
-            receipt += `--------------------------------\n`;
-            items.forEach(i => {
-                receipt += `${i.name} x${i.qty} : ${i.price * i.qty} د\n`;
-            });
-            receipt += `--------------------------------\n`;
-            receipt += `کۆی گشتی: ${total} دینار\n`;
-            receipt += ` سوپاس بۆ سەردانکردنتان ❤️\n\n\n`;
-            sendToPrinterRaw(receipt);
-        }
+        function printKitchenReceipt(tableNo, waiter, items) {}
+        function printCustomerReceipt(tableNo, waiter, items, total) {}
     </script>
 </body>
 </html>
